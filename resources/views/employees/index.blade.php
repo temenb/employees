@@ -8,71 +8,6 @@
 </style>
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Employees List') }}</div>
-
-                
-                <a href="{{ route('employees.create') }}">{{ __('Add new Employee') }}</a>
-                <table>
-                    <tr>
-                        <td>{{ __('Name') }}</td>
-                        <td>{{ __('Telegram') }}</td>
-                        <td>{{ __('Working hours') }}</td>
-                        <td>{{ __('Action') }}</td>
-                    </tr>
-                @foreach ($employees as $employee)
-                    <tr>
-                        <td>{{ $employee->name }}</td>
-                        <td>{{ $employee->telegram }}</td>
-                        <td>
-                            <a href="{{ route('schedulers.create', ['employeeId' => $employee->id]) }}">{{ __('Add') }}</a>
-                            <table>
-                                <tr>
-                                    <td>{{ __('Day') }}</td>
-                                    <td>{{ __('From') }}</td>
-                                    <td>{{ __('To') }}</td>
-                                    <td>{{ __('Action') }}</td>
-                                </tr>
-                                @if (!empty($employee->schedulers))
-                                    @foreach ($employee->schedulers as $scheduler)
-                                        <tr>
-                                            <td>{{ \App\Enum\WeekDay::DAYS[$scheduler->day] }}</td>
-                                            <td>{{ $scheduler->from }}</td>
-                                            <td>{{ $scheduler->to }}</td>
-                                            <td>
-                                                <a href="{{ route('schedulers.edit', ['id' => $scheduler->id]) }}">{{ __('Edit') }}</a>
-                                                <form method="post" action="{{ route('schedulers.delete') }}">
-                                                    @csrf
-                                                    <input name="id" value="{{ $scheduler->id }}" type="hidden" />
-
-                                                    <button type="submit" class="btn btn-primary">
-                                                        {{ __('Delete') }}
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-                            </table>
-                            
-                        </td>
-                        <td>
-                            <a href="{{ route('employees.edit', ['id' => $employee->id]) }}">{{ __('Edit') }}</a>
-                            <form method="post" action="{{ route('employees.delete') }}">
-                                @csrf
-                                <input name="id" value="{{ $employee->id }}" type="hidden" />
-                                
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Delete') }}
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-                </table>
-            </div>
-        </div>
         <br />
         <br />
         <div class="col-md-8">
@@ -147,6 +82,74 @@
                 </div>
             </form>
         </div>
+        <br />
+        <br />
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">{{ __('Employees List') }}</div>
+
+                
+                <a href="{{ route('employees.create') }}">{{ __('Add new Employee') }}</a>
+                <table>
+                    <tr>
+                        <td>{{ __('Name') }}</td>
+                        <td>{{ __('Telegram') }}</td>
+                        <td>{{ __('Working hours') }}</td>
+                        <td>{{ __('Action') }}</td>
+                    </tr>
+                @foreach ($employees as $employee)
+                    <tr>
+                        <td>{{ $employee->name }}</td>
+                        <td>{{ $employee->telegram }}</td>
+                        <td>
+                            <a href="{{ route('schedulers.create', ['employeeId' => $employee->id]) }}">{{ __('Add') }}</a>
+                            <table>
+                                <tr>
+                                    <td>{{ __('Day') }}</td>
+                                    <td>{{ __('From') }}</td>
+                                    <td>{{ __('To') }}</td>
+                                    <td>{{ __('Action') }}</td>
+                                </tr>
+                                @if (!empty($employee->schedulers))
+                                    @foreach ($employee->schedulers as $scheduler)
+                                        <tr>
+                                            <td>{{ \App\Enum\WeekDay::DAYS[$scheduler->day] }}</td>
+                                            <td>{{ $scheduler->from }}</td>
+                                            <td>{{ $scheduler->to }}</td>
+                                            <td>
+                                                <a href="{{ route('schedulers.edit', ['id' => $scheduler->id]) }}">{{ __('Edit') }}</a>
+                                                <form method="post" action="{{ route('schedulers.delete') }}">
+                                                    @csrf
+                                                    <input name="id" value="{{ $scheduler->id }}" type="hidden" />
+
+                                                    <button type="submit" class="btn btn-primary">
+                                                        {{ __('Delete') }}
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </table>
+                            
+                        </td>
+                        <td>
+                            <a href="{{ route('employees.edit', ['id' => $employee->id]) }}">{{ __('Edit') }}</a>
+                            <form method="post" action="{{ route('employees.delete') }}">
+                                @csrf
+                                <input name="id" value="{{ $employee->id }}" type="hidden" />
+                                
+                                <button type="submit" class="btn btn-primary">
+                                    {{ __('Delete') }}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+                </table>
+            </div>
+        </div>
+        
     </div>
 </div>
 @endsection
