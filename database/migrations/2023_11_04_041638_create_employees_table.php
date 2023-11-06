@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('scheduler', function (Blueprint $table) {
+        Schema::create('employees', function (Blueprint $table) {
             $table->id();
-            $table->enum('day', [0, 1, 2, 3, 4, 5, 6]);
-            $table->string('start_at', 5);
-            $table->string('end_at', 5);
+            $table->string('name', 128);
+            $table->string('telegram', 128)->unique();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('scheduler');
+        Schema::dropIfExists('employees');
     }
 };

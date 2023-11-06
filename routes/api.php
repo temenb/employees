@@ -20,6 +20,3 @@ Route::post('register', 'Api\AuthController@register');
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-Route::get('/telegram/webhook', [App\Http\Controllers\Api\TelegramController::class, 'webhook']);
-Route::post('/api/telegram/webhook', [App\Http\Controllers\Api\Telegram::class, 'webhook']);

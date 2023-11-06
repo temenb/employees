@@ -11,12 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employee', function (Blueprint $table) {
+        Schema::create('schedulers', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 128);
-            $table->string('telegram', 128);
+            $table->unsignedBigInteger('employee_id');
+            $table->enum('day', [0, 1, 2, 3, 4, 5, 6]);
+            $table->string('from', 5);
+            $table->string('to', 5);
             $table->timestamps();
             $table->softDeletes();
+            
+            $table->foreign('employee_id')
+                ->references('id')->on('employees')
+                ->onDelete('cascade');
         });
     }
 
@@ -25,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employee');
+        Schema::dropIfExists('schedulers');
     }
 };
