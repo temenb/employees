@@ -107,7 +107,7 @@
                     <label for="day" class="col-md-4 col-form-label text-md-end">{{ __('Day') }}</label>
 
                     <div class="col-md-6">
-                        <select id="day" type="text" class="form-control @error('day') is-invalid @enderror" name="day"required autocomplete="day" autofocus @if(!isset($scheduler))multiple @endif >
+                        <select id="day" type="text" class="form-control @error('day') is-invalid @enderror" name="day"required autocomplete="day" autofocus >
                             @foreach (\App\Enum\WeekDay::DAYS as $key => $day)
                             <option value="{{ $key }}" @if (now()->format('w') == $key) selected="selected" @endif>{{ $day }}</option>
                             @endforeach
