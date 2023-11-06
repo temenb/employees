@@ -12,8 +12,8 @@ services:
             POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
         volumes:
             - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
-            - './docker/containers/phpunit-postgres/data:/var/lib/postgresql/data'
-            - './docker/containers/phpunit-postgres/dumps:/dumps'
+            - './docker/containers/postgres/data:/var/lib/postgresql/data'
+            - './docker/containers/postgres/dumps:/dumps'
         networks:
             - alexa
         healthcheck:
