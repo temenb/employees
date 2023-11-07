@@ -13,8 +13,8 @@ class Employee extends Model
     
     protected $fillable = ['name', 'telegram'];
     
-    public function schedulers(): HasMany
+    public function schedules(): HasMany
     {
-        return $this->hasMany(Scheduler::class)->orderBy('day', 'asc')->orderBy('from', 'asc');
+        return $this->hasMany(Schedule::class)->orderBy('day', 'asc')->orderBy('from', 'asc');
     }
 }

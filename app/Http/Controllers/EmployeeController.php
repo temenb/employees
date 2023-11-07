@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Employee;
 use App\Enum\WeekDay;
-use App\Models\Scheduler;
+use App\Models\Schedule;
 use Illuminate\Support\Facades\File;
 
 class EmployeeController extends Controller
@@ -23,11 +23,9 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees = Employee::all();
-        
-        
-        $employeesHasToBeAtWork = Employee::whereHas('schedulers', function($q) {
+        $employeesHasToBeAtWork = Employee::whereHas('schedules', function($q) {
             $day = now()->format('w');
-            $time = now()->format('H:i');
+            $time = 60*60*now()->format('H') + 60*now()->format('i');
             $q->where('day', $day)->where('from', '<', $time)->where('to', '>', $time);
         })->get();
         
@@ -74,14 +72,14 @@ class EmployeeController extends Controller
         $contents = '';
         foreach($employees as $employee) {
             $contents .= "{$employee->name};{$employee->telegram};";
-            if ($employee->schedulers) {
-                $schedulers = $employee->schedulers;
+            if ($employee->schedules) {
+                $schedules = $employee->schedules;
                 $i = 0;
-                foreach($schedulers as $scheduler) {
+                foreach($schedules as $schedule) {
                     $contents .= ($i++ > 0)? ";;": '';
-                    $from = trim($scheduler->from);
-                    $to = trim($scheduler->to); 
-                    $contents .= WeekDay::DAYS[$scheduler->day] . ";{$from};{$to};\n";    
+                    $from = Schedule::convetIntToTime($schedule->from);
+                    $to = Schedule::convetIntToTime($schedule->to); 
+                    $contents .= WeekDay::DAYS[$schedule->day] . ";{$from};{$to};\n";    
                 }
             } else {
                 $contents .= ';;;';
@@ -96,9 +94,10 @@ class EmployeeController extends Controller
     }
 
     public function import(Request $request)
-    {
+    {        
         $content = File::get($request->file('import_file')->getRealPath());
-        Scheduler::truncate();
+        `echo "$content" >> /tmp/debug`;
+        Schedule::truncate();
         Employee::truncate();
         $_content = explode("\n", trim($content));
         
@@ -112,16 +111,16 @@ class EmployeeController extends Controller
                 $data[$key]['employee']['telegram'] = $line[1];
             }
             $day = empty($line[2])? $day: array_search($line[2], WeekDay::DAYS);
-            $data[$key]['scheduler'][] = [
+            $data[$key]['schedule'][] = [
                 'day' => $day,
-                'from' => $line[3],
-                'to' => $line[4],
+                'from' => Schedule::convetTimeToInt($line[3]),
+                'to' => Schedule::convetTimeToInt($line[4]),
             ];
         }
         foreach ($data as $piece) {
             $employee = Employee::create($piece['employee']);
-            foreach ($piece['scheduler'] as $scheduler) {
-                $employee->schedulers()->save(Scheduler::make($scheduler));
+            foreach ($piece['schedule'] as $schedule) {
+                $employee->schedules()->save(Schedule::make($schedule));
             }
         }
         return redirect()->route('employees');
@@ -130,14 +129,14 @@ class EmployeeController extends Controller
     public function compare(Request $request)
     {
         $day = $request->day;
-        $time = $request->time;
+        $time = Schedule::convetTimeToInt($request->time);
         $employees = array_map('trim', explode("\n", $request->employees));
         
         $employeesAtWork = Employee::whereIn('telegram', $employees)->get();
         
         $notFoundEmployees = array_diff($employees, $employeesAtWork->pluck('telegram')->toArray());
         
-        $employeesHasToBeAtWorkCollection = Employee::whereHas('schedulers', function($q) use($day, $time) {
+        $employeesHasToBeAtWorkCollection = Employee::whereHas('schedules', function($q) use($day, $time) {
             $q->where('day', $day)->where('from', '<', $time)->where('to', '>', $time);
         })->get();
         

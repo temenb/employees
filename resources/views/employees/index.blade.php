@@ -102,7 +102,7 @@
                         <td>{{ $employee->name }}</td>
                         <td>{{ $employee->telegram }}</td>
                         <td>
-                            <a href="{{ route('schedulers.create', ['employeeId' => $employee->id]) }}">{{ __('Add') }}</a>
+                            <a href="{{ route('schedules.create', ['employeeId' => $employee->id]) }}">{{ __('Add') }}</a>
                             <table>
                                 <tr>
                                     <td>{{ __('Day') }}</td>
@@ -110,17 +110,17 @@
                                     <td>{{ __('To') }}</td>
                                     <td>{{ __('Action') }}</td>
                                 </tr>
-                                @if (!empty($employee->schedulers))
-                                    @foreach ($employee->schedulers as $scheduler)
+                                @if (!empty($employee->schedules))
+                                    @foreach ($employee->schedules as $schedule)
                                         <tr>
-                                            <td>{{ \App\Enum\WeekDay::DAYS[$scheduler->day] }}</td>
-                                            <td>{{ $scheduler->from }}</td>
-                                            <td>{{ $scheduler->to }}</td>
+                                            <td>{{ \App\Enum\WeekDay::DAYS[$schedule->day] }}</td>
+                                            <td>{{ \App\Models\Schedule::convetIntToTime($schedule->from) }}</td>
+                                            <td>{{ \App\Models\Schedule::convetIntToTime($schedule->to) }}</td>
                                             <td>
-                                                <a href="{{ route('schedulers.edit', ['id' => $scheduler->id]) }}">{{ __('Edit') }}</a>
-                                                <form method="post" action="{{ route('schedulers.delete') }}">
+                                                <a href="{{ route('schedules.edit', ['id' => $schedule->id]) }}">{{ __('Edit') }}</a>
+                                                <form method="post" action="{{ route('schedules.delete') }}">
                                                     @csrf
-                                                    <input name="id" value="{{ $scheduler->id }}" type="hidden" />
+                                                    <input name="id" value="{{ $schedule->id }}" type="hidden" />
 
                                                     <button type="submit" class="btn btn-primary">
                                                         {{ __('Delete') }}
