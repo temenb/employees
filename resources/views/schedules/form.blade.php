@@ -40,7 +40,7 @@
                             <label for="from" class="col-md-4 col-form-label text-md-end">{{ __('From') }}</label>
 
                             <div class="col-md-6">
-                                <input id="from" type="text" pattern="([0-1]\d|2[0-3]):[0-3]\d}" class="form-control @error('from') is-invalid @enderror" name="from" value="{{ old('from', isset($schedule)? $schedule->from: '') }}" required autocomplete="from">
+                                <input id="from" type="text" pattern="([0-1]\d|2[0-3]):[0-3]\d}" class="form-control @error('from') is-invalid @enderror" name="from" value="{{ old('from', isset($schedule)? \App\Models\Schedule::convertTimestampToString($schedule->from): '') }}" required autocomplete="from">
 
                                 @error('from')
                                     <span class="invalid-feedback" role="alert">
@@ -54,7 +54,7 @@
                             <label for="to" class="col-md-4 col-form-label text-md-end">{{ __('To') }}</label>
 
                             <div class="col-md-6">
-                                <input id="to" type="text" pattern="([0-1]\d|2[0-3]):[0-3]\d}" class="form-control @error('to') is-invalid @enderror" name="to" value="{{ old('to', isset($schedule)? $schedule->to: '') }}" required autocomplete="to">
+                                <input id="to" type="text" pattern="([0-1]\d|2[0-3]):[0-3]\d}" class="form-control @error('to') is-invalid @enderror" name="to" value="{{ old('to', isset($schedule)? \App\Models\Schedule::convertTimestampToString($schedule->to): '') }}" required autocomplete="to">
 
                                 @error('to')
                                     <span class="invalid-feedback" role="alert">

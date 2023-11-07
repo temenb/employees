@@ -29,8 +29,8 @@ class ScheduleController extends Controller
         $makeSchedule = function($request, $day) {
             $schedule = Schedule::make($request->all());
             $schedule->day = $day;
-            $schedule->from = Schedule::convetTimeToInt($request->from);
-            $schedule->to = Schedule::convetTimeToInt($request->to);
+            $schedule->from = Schedule::convertStringToTimestamp($request->from);
+            $schedule->to = Schedule::convertStringToTimestamp($request->to);
             $schedule->save();            
         }; 
 
@@ -52,8 +52,8 @@ class ScheduleController extends Controller
     {
         $schedule = Schedule::find($id);
         $schedule->fill($request->all());
-        $schedule->from = Schedule::convetTimeToInt($request->from);
-        $schedule->to = Schedule::convetTimeToInt($request->to);
+        $schedule->from = Schedule::convertStringToTimestamp($request->from);
+        $schedule->to = Schedule::convertStringToTimestamp($request->to);
         $days = $request->days;
         $schedule->day = array_shift($days);
         $schedule->save();

@@ -77,8 +77,8 @@ class EmployeeController extends Controller
                 $i = 0;
                 foreach($schedules as $schedule) {
                     $contents .= ($i++ > 0)? ";;": '';
-                    $from = Schedule::convetIntToTime($schedule->from);
-                    $to = Schedule::convetIntToTime($schedule->to); 
+                    $from = Schedule::convertTimestampToString($schedule->from);
+                    $to = Schedule::convertTimestampToString($schedule->to); 
                     $contents .= WeekDay::DAYS[$schedule->day] . ";{$from};{$to};\n";    
                 }
             } else {
@@ -113,8 +113,8 @@ class EmployeeController extends Controller
             $day = empty($line[2])? $day: array_search($line[2], WeekDay::DAYS);
             $data[$key]['schedule'][] = [
                 'day' => $day,
-                'from' => Schedule::convetTimeToInt($line[3]),
-                'to' => Schedule::convetTimeToInt($line[4]),
+                'from' => Schedule::convertStringToTimestamp($line[3]),
+                'to' => Schedule::convertStringToTimestamp($line[4]),
             ];
         }
         foreach ($data as $piece) {
@@ -129,7 +129,7 @@ class EmployeeController extends Controller
     public function compare(Request $request)
     {
         $day = $request->day;
-        $time = Schedule::convetTimeToInt($request->time);
+        $time = Schedule::convertStringToTimestamp($request->time);
         $employees = array_map('trim', explode("\n", $request->employees));
         
         $employeesAtWork = Employee::whereIn('telegram', $employees)->get();

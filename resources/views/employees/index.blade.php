@@ -114,8 +114,8 @@
                                     @foreach ($employee->schedules as $schedule)
                                         <tr>
                                             <td>{{ \App\Enum\WeekDay::DAYS[$schedule->day] }}</td>
-                                            <td>{{ \App\Models\Schedule::convetIntToTime($schedule->from) }}</td>
-                                            <td>{{ \App\Models\Schedule::convetIntToTime($schedule->to) }}</td>
+                                            <td>{{ \App\Models\Schedule::convertTimestampToString($schedule->from) }}</td>
+                                            <td>{{ \App\Models\Schedule::convertTimestampToString($schedule->to) }}</td>
                                             <td>
                                                 <a href="{{ route('schedules.edit', ['id' => $schedule->id]) }}">{{ __('Edit') }}</a>
                                                 <form method="post" action="{{ route('schedules.delete') }}">

@@ -18,14 +18,14 @@ class Schedule extends Model
         return $this->hasOne(Employee::class);
     }
     
-    static public function convetTimeToInt ($time) 
+    static public function convertStringToTimestamp ($time) 
     {
         $_time = explode(':', $time);
         $timestamp = 60*60*intval($_time[0]) + 60*intval($_time[1]?? 0);
         return $timestamp;
     }
     
-    static public function convetIntToTime ($timestamp) 
+    static public function convertTimestampToString ($timestamp)
     {
         $hours = intdiv($timestamp, 60*60);
         $minutes = $timestamp % (60*60);
