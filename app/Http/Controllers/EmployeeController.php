@@ -76,10 +76,12 @@ class EmployeeController extends Controller
             $contents .= "{$employee->name};{$employee->telegram};";
             if ($employee->schedulers) {
                 $schedulers = $employee->schedulers;
-                $scheduler = $schedulers->shift();
-                $contents .= WeekDay::DAYS[$scheduler->day] . ";{$scheduler->from};{$scheduler->to};\n";
+                $i = 0;
                 foreach($schedulers as $scheduler) {
-                    $contents .= ";;" . WeekDay::DAYS[$scheduler->day] . ";{$scheduler->from};{$scheduler->to};\n";
+                    $contents .= ($i++ > 0)? ";;": '';
+                    $from = trim($scheduler->from);
+                    $to = trim($scheduler->to); 
+                    $contents .= WeekDay::DAYS[$scheduler->day] . ";{$from};{$to};\n";    
                 }
             } else {
                 $contents .= ';;;';
@@ -109,8 +111,9 @@ class EmployeeController extends Controller
                 $data[$key]['employee']['name'] = $line[0];
                 $data[$key]['employee']['telegram'] = $line[1];
             }
+            $day = empty($line[2])? $day: array_search($line[2], WeekDay::DAYS);
             $data[$key]['scheduler'][] = [
-                'day' => array_search($line[2], WeekDay::DAYS),
+                'day' => $day,
                 'from' => $line[3],
                 'to' => $line[4],
             ];
