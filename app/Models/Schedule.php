@@ -28,7 +28,7 @@ class Schedule extends Model
     static public function convertTimestampToString ($timestamp)
     {
         $hours = intdiv($timestamp, 60*60);
-        $minutes = $timestamp % (60*60);
+        $minutes = ($timestamp % (60*60))/60;
         $time = $num_padded = sprintf("%02d", $hours) . ':' . sprintf("%02d", $minutes);
         return $time;
     }

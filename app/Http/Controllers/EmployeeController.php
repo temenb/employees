@@ -112,7 +112,7 @@ class EmployeeController extends Controller
             }
             
             $days = empty($line[2])? $days: explode(',', $line[2]);
-            
+
             foreach ($days as $day) {
                 $data[$key]['schedule'][] = [
                     'day' => array_search(trim($day), WeekDay::DAYS),
