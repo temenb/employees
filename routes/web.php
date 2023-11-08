@@ -32,8 +32,8 @@ Route::post('/employees/compare', [App\Http\Controllers\EmployeeController::clas
 Route::get('/schedules/create/employee/{employeeId}', [App\Http\Controllers\ScheduleController::class, 'create'])->name('schedules.create');
 Route::post('/schedules/create/employee/{employeeId}', [App\Http\Controllers\ScheduleController::class, 'insert'])->name('schedules.create');
 Route::post('/schedules/delete', [App\Http\Controllers\ScheduleController::class, 'delete'])->name('schedules.delete');
-Route::get('/schedules/edit/{id}', [App\Http\Controllers\ScheduleController::class, 'edit'])->name('schedules.edit');
-Route::post('/schedules/edit/{id}', [App\Http\Controllers\ScheduleController::class, 'patch'])->name('schedules.edit');
+Route::get('/schedules/edit/{ids}', [App\Http\Controllers\ScheduleController::class, 'edit'])->name('schedules.edit');
+Route::post('/schedules/edit/{ids}', [App\Http\Controllers\ScheduleController::class, 'patch'])->name('schedules.edit');
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

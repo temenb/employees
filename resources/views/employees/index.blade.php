@@ -111,16 +111,21 @@
                                     <td>{{ __('Action') }}</td>
                                 </tr>
                                 @if (!empty($employee->schedules))
-                                    @foreach ($employee->schedules as $schedule)
+                                    @foreach ($employee->schedulesAgregatedByDays() as $schedule)
                                         <tr>
-                                            <td>{{ \App\Enum\WeekDay::DAYS[$schedule->day] }}</td>
-                                            <td>{{ \App\Models\Schedule::convertTimestampToString($schedule->from) }}</td>
-                                            <td>{{ \App\Models\Schedule::convertTimestampToString($schedule->to) }}</td>
                                             <td>
-                                                <a href="{{ route('schedules.edit', ['id' => $schedule->id]) }}">{{ __('Edit') }}</a>
+                                                @foreach ($schedule['days'] as $day)
+                                                    {{ \App\Enum\WeekDay::DAYS[$day] }}@if(!$loop->last),
+                                                    @endif
+                                                @endforeach
+                                            </td>
+                                            <td>{{ \App\Models\Schedule::convertTimestampToString($schedule['from'] ) }}</td>
+                                            <td>{{ \App\Models\Schedule::convertTimestampToString($schedule['to']) }}</td>
+                                            <td>
+                                                <a href="{{ route('schedules.edit', ['ids' => implode(',', $schedule['ids'])]) }}">{{ __('Edit') }}</a>
                                                 <form method="post" action="{{ route('schedules.delete') }}">
                                                     @csrf
-                                                    <input name="id" value="{{ $schedule->id }}" type="hidden" />
+                                                    <input name="ids" value="{{ implode(',', $schedule['ids']) }}" type="hidden" />
 
                                                     <button type="submit" class="btn btn-primary">
                                                         {{ __('Delete') }}

@@ -17,4 +17,28 @@ class Employee extends Model
     {
         return $this->hasMany(Schedule::class)->orderBy('day', 'asc')->orderBy('from', 'asc');
     }
+    
+    public function schedulesAgregatedByDays(): array
+    {
+        $schedulers = $this->schedules;
+        $_result = [];
+        foreach ($schedulers as $scheduler) {
+            $_result[$scheduler->from][$scheduler->to]['days'][] = $scheduler->day;
+            $_result[$scheduler->from][$scheduler->to]['ids'][] = $scheduler->id;
+        }
+        
+        $result = [];
+        foreach ($_result as $from => $_data) {
+            foreach ($_data as $to => $data) {
+                $result[] = [
+                    'ids' => $data['ids'],
+                    'days' => $data['days'],
+                    'from' => $from,
+                    'to' => $to,
+                ];
+            }
+        }
+
+        return $result;
+    }
 }

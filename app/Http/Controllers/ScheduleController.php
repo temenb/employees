@@ -25,46 +25,43 @@ class ScheduleController extends Controller
     public function insert(Request $request)
     {
         $days = $request->days;
-        
-        $makeSchedule = function($request, $day) {
+
+        foreach($days as $day) {
             $schedule = Schedule::make($request->all());
             $schedule->day = $day;
             $schedule->from = Schedule::convertStringToTimestamp($request->from);
             $schedule->to = Schedule::convertStringToTimestamp($request->to);
             $schedule->save();            
-        }; 
-
-        $makeSchedule($request, array_shift($days));
-
-        foreach($days as $day) {
-            $makeSchedule($request, $days);
         }
+
         return redirect()->route('employees');
     }
 
-    public function edit($id)
+    public function edit($ids)
     {
-        $schedule = Schedule::find($id);
-        return view('schedules.form', ['schedule' => $schedule]);
+        $schedules = Schedule::whereIn('id', explode(',', $ids))->get();
+        return view('schedules.form', ['schedules' => $schedules]);
     }
 
-    public function patch(Request $request, $id)
+    public function patch(Request $request, $ids)
     {
-        $schedule = Schedule::find($id);
-        $schedule->fill($request->all());
-        $schedule->from = Schedule::convertStringToTimestamp($request->from);
-        $schedule->to = Schedule::convertStringToTimestamp($request->to);
+        $schedules = Schedule::whereIn('id', explode(',', $ids))->delete();
         $days = $request->days;
-        $schedule->day = array_shift($days);
-        $schedule->save();
+        foreach($days as $day) {
+            $schedule = Schedule::make($request->all());
+            $schedule->day = $day;
+            $schedule->from = Schedule::convertStringToTimestamp($request->from);
+            $schedule->to = Schedule::convertStringToTimestamp($request->to);
+            $schedule->save();            
+        }
+
         return redirect()->route('employees');
     }
 
     public function delete(Request $request)
     {
-        $id = $request->get('id');
-        $schedule = Schedule::findOrFail($id);
-        $schedule->delete();
+        $ids = explode(',', $request->get('ids'));
+        $schedule = Schedule::whereIn('id', $ids)->delete();
         return redirect()->route('employees');
     }
 }

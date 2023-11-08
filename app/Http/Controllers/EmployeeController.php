@@ -73,19 +73,19 @@ class EmployeeController extends Controller
         foreach($employees as $employee) {
             $contents .= "{$employee->name};{$employee->telegram};";
             if ($employee->schedules) {
-                $schedules = $employee->schedules;
+                $schedules = $employee->schedulesAgregatedByDays();
                 $i = 0;
-                foreach($schedules as $schedule) {
+                foreach($schedules as $data) {
                     $contents .= ($i++ > 0)? ";;": '';
-                    $from = Schedule::convertTimestampToString($schedule->from);
-                    $to = Schedule::convertTimestampToString($schedule->to); 
-                    $contents .= WeekDay::DAYS[$schedule->day] . ";{$from};{$to};\n";    
+                    $from = Schedule::convertTimestampToString($data['from']);
+                    $to = Schedule::convertTimestampToString($data['to']); 
+                    $days = WeekDay::convertIntsToString($data['days']); 
+                    $contents .= "{$days};{$from};{$to};\n";    
                 }
             } else {
                 $contents .= ';;;';
             }
         }
-                
                 
         $filename = 'export.csv';
         return response()->streamDownload(function () use ($contents) {
@@ -104,25 +104,31 @@ class EmployeeController extends Controller
         $data = [];
         $key = -1;
         foreach ($_content as $_line) {
-            $line = explode(';', $_line);
+            $line = preg_split('(;|\t)', $_line);
             if ($line[1]) {
                 $key++;
                 $data[$key]['employee']['name'] = $line[0];
                 $data[$key]['employee']['telegram'] = $line[1];
             }
-            $day = empty($line[2])? $day: array_search($line[2], WeekDay::DAYS);
-            $data[$key]['schedule'][] = [
-                'day' => $day,
-                'from' => Schedule::convertStringToTimestamp($line[3]),
-                'to' => Schedule::convertStringToTimestamp($line[4]),
-            ];
+            
+            $days = empty($line[2])? $days: explode(',', $line[2]);
+            
+            foreach ($days as $day) {
+                $data[$key]['schedule'][] = [
+                    'day' => array_search(trim($day), WeekDay::DAYS),
+                    'from' => Schedule::convertStringToTimestamp($line[3]),
+                    'to' => Schedule::convertStringToTimestamp($line[4]),
+                ];    
+            }
         }
+        
         foreach ($data as $piece) {
             $employee = Employee::create($piece['employee']);
             foreach ($piece['schedule'] as $schedule) {
                 $employee->schedules()->save(Schedule::make($schedule));
             }
         }
+        
         return redirect()->route('employees');
     }
 
