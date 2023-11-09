@@ -136,26 +136,42 @@ class EmployeeController extends Controller
     {
         $day = $request->day;
         $time = Schedule::convertStringToTimestamp($request->time);
-        $employees = array_map('trim', explode("\n", $request->employees));
         
-        $employeesAtWork = Employee::whereIn('telegram', $employees)->get();
-        
-        $notFoundEmployees = array_diff($employees, $employeesAtWork->pluck('telegram')->toArray());
-        
-        $employeesHasToBeAtWorkCollection = Employee::whereHas('schedules', function($q) use($day, $time) {
+        if (0 == strpos($request->employees, '<ul role="listbox" class="ant-select-dropdown-menu  ant-select-dropdown-menu-root ant-select-dropdown-menu-vertical"')) {
+            preg_match_all('/(?<=\\>)[^\\<]+(?=\\<\\/li\\>)/', $request->employees, $matches);
+            $employees = array_map(function($item) {return trim($item);}, $matches[0]);
+            unset($employees[0]);
+            unset($employees[1]);
+            unset($employees[2]);
+            unset($employees[3]);
+            unset($employees[4]);
+        } else {
+            $employees = array_map('trim', explode("\n", $request->employees));
+        }
+
+        $employeesAtWorkInTime = Employee::whereIn('name', $employees)->whereHas('schedules', function($q) use($day, $time) {
             $q->where('day', $day)->where('from', '<', $time)->where('to', '>', $time);
         })->get();
         
-        $employeesHasToBeAtWork = $employeesHasToBeAtWorkCollection->pluck('telegram')->toArray();
+        $_employees = array_diff($employees, $employeesAtWorkInTime->pluck('name')->toArray());
         
-        $employeesNotAtWork = array_diff($employeesHasToBeAtWork, $employeesAtWork->pluck('telegram')->toArray());
+        
+        $employeesAtWorkNotInTime = Employee::whereIn('name', $_employees)->get();
+        
+        
+        $notFoundEmployees = array_diff($_employees, $employeesAtWorkNotInTime->pluck('telegram')->toArray());
+        
+        
+        $absentEmployees = Employee::whereHas('schedules', function($q) use($day, $time) {
+            $q->where('day', $day)->where('from', '<', $time)->where('to', '>', $time);
+        })->whereNotIn('name', $employees)->get();
         
         return view('employees.report', [
-            'employeesList' => $employees, 
+            'initialList' => $employees, 
+            'employeesAtWorkInTime' => $employeesAtWorkInTime,
+            'employeesAtWorkNotInTime' => $employeesAtWorkNotInTime,
             'notFoundEmployees' => $notFoundEmployees, 
-            'employeesAtWork' => $employeesAtWork->pluck('telegram')->toArray(),
-            'employeesHasToBeAtWork' => $employeesHasToBeAtWork,
-            'employeesNotAtWork' => $employeesNotAtWork
+            'absentEmployees' => $absentEmployees,
         ]);
     }
 }

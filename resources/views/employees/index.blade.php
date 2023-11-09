@@ -71,8 +71,10 @@
                     </div>
                 </div>
                 <div class="card">
-                    <textarea name="employees" required>@foreach($employeesHasToBeAtWork as $employee){{ $employee->telegram }}
-@endforeach</textarea>
+                    <label for="employees" class="col-md-4 col-form-label text-md-end">{{ __('Planned employees list') }}</label>
+                    <div class="col-md-6">
+                        <textarea name="employees"></textarea>
+                    </div>
                 </div>
 
                 <div class="card">

@@ -11,12 +11,12 @@
                         <a href="{{ url()->previous() }}">{{ __('Back') }}</a>
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Initial Employees List') }}</div>
+                <div class="card-header">{{ __('Initial employees list') }}</div>
                 <table>
                     <tr>
-                        <td>{{ __('Telegram') }}</td>
+                        <td>{{ __('Name') }}</td>
                     </tr>
-                @foreach ($employeesList as $employee)
+                @foreach ($initialList as $employee)
                     <tr>
                         <td>{{ $employee }}</td>
                     </tr>
@@ -26,10 +26,10 @@
         </div>
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Not Found Employees List') }}</div>
+                <div class="card-header">{{ __('Not found employees list') }}</div>
                 <table>
                     <tr>
-                        <td>{{ __('Telegram') }}</td>
+                        <td>{{ __('Name') }}</td>
                     </tr>
                 @foreach ($notFoundEmployees as $employee)
                     <tr>
@@ -41,14 +41,16 @@
         </div>
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Employees At Workplace List') }}</div>
+                <div class="card-header">{{ __('Employees at work in time') }}</div>
                 <table>
                     <tr>
+                        <td>{{ __('Name') }}</td>
                         <td>{{ __('Telegram') }}</td>
                     </tr>
-                @foreach ($employeesAtWork as $employee)
+                @foreach ($employeesAtWorkInTime as $employee)
                     <tr>
-                        <td>{{ $employee }}</td>
+                        <td>{{ $employee->name }}</td>
+                        <td>{{ $employee->telegram }}</td>
                     </tr>
                 @endforeach
                 </table>
@@ -56,14 +58,16 @@
         </div>
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Absent Employees List') }}</div>
+                <div class="card-header">{{ __('Absent employees') }}</div>
                 <table>
                     <tr>
+                        <td>{{ __('Name') }}</td>
                         <td>{{ __('Telegram') }}</td>
                     </tr>
-                @foreach ($employeesNotAtWork as $employee)
+                @foreach ($absentEmployees as $employee)
                     <tr>
-                        <td>{{ $employee }}</td>
+                        <td>{{ $employee->name }}</td>
+                        <td>{{ $employee->telegram }}</td>
                     </tr>
                 @endforeach
                 </table>
@@ -71,14 +75,16 @@
         </div>
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Employees Has To Be At Workplace List') }}</div>
+                <div class="card-header">{{ __('Employees at work not in time') }}</div>
                 <table>
                     <tr>
+                        <td>{{ __('Name') }}</td>
                         <td>{{ __('Telegram') }}</td>
                     </tr>
-                @foreach ($employeesHasToBeAtWork as $employee)
+                @foreach ($employeesAtWorkNotInTime as $employee)
                     <tr>
-                        <td>{{ $employee }}</td>
+                        <td>{{ $employee->name }}</td>
+                        <td>{{ $employee->telegram }}</td>
                     </tr>
                 @endforeach
                 </table>
