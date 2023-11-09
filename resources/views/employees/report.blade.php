@@ -54,6 +54,18 @@
                     </tr>
                 @endforeach
                 </table>
+                <form method="get" action="{{ route('employees.custom_export') }}">
+                @foreach ($employeesAtWorkInTime as $employee)
+                    <input type="hidden" name="ids[]" value="{{ $employee->id }}" />
+                @endforeach
+                    <div class="row mb-0">
+                        <div class="col-md-8 offset-md-4">
+                            <button type="submit" class="btn btn-primary">
+                                {{ __('Export') }}
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="col-md-8">
@@ -71,6 +83,18 @@
                     </tr>
                 @endforeach
                 </table>
+                <form method="get" action="{{ route('employees.custom_export') }}">
+                @foreach ($absentEmployees as $employee)
+                    <input type="hidden" name="ids[]" value="{{ $employee->id }}" />
+                @endforeach
+                    <div class="row mb-0">
+                        <div class="col-md-8 offset-md-4">
+                            <button type="submit" class="btn btn-primary">
+                                {{ __('Export') }}
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="col-md-8">
@@ -88,6 +112,18 @@
                     </tr>
                 @endforeach
                 </table>
+                <form method="get" action="{{ route('employees.custom_export') }}">
+                @foreach ($employeesAtWorkNotInTime as $employee)
+                    <input type="hidden" name="ids[]" value="{{ $employee->id }}" />
+                @endforeach
+                    <div class="row mb-0">
+                        <div class="col-md-8 offset-md-4">
+                            <button type="submit" class="btn btn-primary">
+                                {{ __('Export') }}
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

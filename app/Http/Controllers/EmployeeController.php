@@ -93,6 +93,21 @@ class EmployeeController extends Controller
         }, $filename);
     }
 
+    public function customExport(Request $request)
+    {
+        $ids = $request->ids;
+        $employees = Employee::whereIn('id', $ids)->get();
+        $contents = '';
+        foreach($employees as $employee) {
+            $contents .= "{$employee->name};{$employee->telegram};\n";
+        }
+                
+        $filename = 'export.csv';
+        return response()->streamDownload(function () use ($contents) {
+            echo $contents;
+        }, $filename);
+    }
+
     public function import(Request $request)
     {        
         $content = File::get($request->file('import_file')->getRealPath());

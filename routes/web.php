@@ -25,6 +25,7 @@ Route::post('/employees/delete', [App\Http\Controllers\EmployeeController::class
 Route::get('/employees/edit/{id}', [App\Http\Controllers\EmployeeController::class, 'edit'])->name('employees.edit');
 Route::post('/employees/edit/{id}', [App\Http\Controllers\EmployeeController::class, 'patch'])->name('employees.edit');
 
+Route::get('/employees/custom_export', [App\Http\Controllers\EmployeeController::class, 'customExport'])->name('employees.custom_export');
 Route::get('/employees/export', [App\Http\Controllers\EmployeeController::class, 'export'])->name('employees.export');
 Route::post('/employees/import', [App\Http\Controllers\EmployeeController::class, 'import'])->name('employees.import');
 Route::post('/employees/compare', [App\Http\Controllers\EmployeeController::class, 'compare'])->name('employees.compare');
