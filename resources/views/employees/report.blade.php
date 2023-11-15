@@ -11,6 +11,8 @@
                         <a href="{{ url()->previous() }}">{{ __('Back') }}</a>
         <div class="col-md-8">
             <div class="card">
+                <div class="card-header">{{ \App\Enum\WeekDay::DAYS[$request->day] }}</div>
+                <div class="card-header">{{ $request->time }}</div>
                 <div class="card-header">{{ __('Initial employees list') }}</div>
                 <table>
                     <tr>

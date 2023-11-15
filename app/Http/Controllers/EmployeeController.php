@@ -186,6 +186,7 @@ class EmployeeController extends Controller
             'employeesAtWorkNotInTime' => $employeesAtWorkNotInTime,
             'notFoundEmployees' => $notFoundEmployees, 
             'absentEmployees' => $absentEmployees,
+            'request' => $request,
         ]);
     }
 }
