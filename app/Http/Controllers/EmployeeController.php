@@ -111,7 +111,6 @@ class EmployeeController extends Controller
     public function import(Request $request)
     {        
         $content = File::get($request->file('import_file')->getRealPath());
-        `echo "$content" >> /tmp/debug`;
         Schedule::truncate();
         Employee::truncate();
         $_content = explode("\n", trim($content));
@@ -138,7 +137,7 @@ class EmployeeController extends Controller
         }
         
         foreach ($data as $piece) {
-            $employee = Employee::create($piece['employee']);
+            $employee = Employee::create(array_map('utf8_encode', $piece['employee']));
             foreach ($piece['schedule'] as $schedule) {
                 $employee->schedules()->save(Schedule::make($schedule));
             }
