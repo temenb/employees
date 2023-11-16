@@ -150,8 +150,8 @@ class EmployeeController extends Controller
     {
         $day = $request->day;
         $time = Schedule::convertStringToTimestamp($request->time);
-        
-        if (0 == strpos($request->employees, '<ul role="listbox" class="ant-select-dropdown-menu  ant-select-dropdown-menu-root ant-select-dropdown-menu-vertical"')) {
+
+        if (0 === strpos($request->employees, '<ul')) {
             preg_match_all('/(?<=\\>)[^\\<]+(?=\\<\\/li\\>)/', $request->employees, $matches);
             $employees = array_map(function($item) {return trim($item);}, $matches[0]);
             unset($employees[0]);
@@ -160,7 +160,7 @@ class EmployeeController extends Controller
             unset($employees[3]);
             unset($employees[4]);
         } else {
-            $employees = array_map('trim', explode("\n", $request->employees));
+            $employees = array_map('trim', preg_split("/[\\n\\s\\t]/", $request->employees));
         }
 
         $employeesAtWorkInTime = Employee::whereIn('name', $employees)->whereHas('schedules', function($q) use($day, $time) {
