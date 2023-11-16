@@ -173,7 +173,7 @@ class EmployeeController extends Controller
         $employeesAtWorkNotInTime = Employee::whereIn('name', $_employees)->get();
         
         
-        $notFoundEmployees = array_diff($_employees, $employeesAtWorkNotInTime->pluck('telegram')->toArray());
+        $notFoundEmployees = array_diff($_employees, $employeesAtWorkNotInTime->pluck('name')->toArray());
         
         
         $absentEmployees = Employee::whereHas('schedules', function($q) use($day, $time) {
