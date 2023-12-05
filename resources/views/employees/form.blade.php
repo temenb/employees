@@ -43,6 +43,20 @@
                             </div>
                         </div>
 
+                        <div class="row mb-3">
+                            <label for="suspended" class="col-md-4 col-form-label text-md-end">{{ __('Suspended') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="suspended" type="checkbox" value=1 class="form-control @error('suspended') is-invalid @enderror" name="suspended" @if (isset($employee) && $employee->suspended) checked @endif autocomplete="suspended">
+
+                                @error('suspended')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
 
                         <div class="row mb-0">
                             <div class="col-md-8 offset-md-4">

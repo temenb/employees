@@ -97,6 +97,7 @@
                         <td>{{ __('Name') }}</td>
                         <td>{{ __('Telegram') }}</td>
                         <td>{{ __('Working hours') }}</td>
+                        <td>{{ __('Suspended') }}</td>
                         <td>{{ __('Action') }}</td>
                     </tr>
                 @foreach ($employees as $employee)
@@ -141,6 +142,13 @@
                             
                         </td>
                         <td>
+                            <!--{{var_export($employee->toArray())}}-->
+                            <form action="{{ route('employees.edit', ['id' => $employee->id]) }}" type="POST"> 
+                                @csrf
+                                <input type="checkbox" value=1 @if ($employee->suspended) checked @endif name="suspended" class="suspended-{{ $employee->id }}" />
+                            </form>
+                        </td>
+                        <td>
                             <a href="{{ route('employees.edit', ['id' => $employee->id]) }}">{{ __('Edit') }}</a>
                             <form method="post" action="{{ route('employees.delete') }}">
                                 @csrf
@@ -159,4 +167,21 @@
         
     </div>
 </div>
+
+<script> 
+    $(document).ready(function(){
+        $(document).on('click', 'input[name=suspended]', function(e) {
+            const $form = $(e.target).closest('form');
+            
+            $.ajax({
+              type: $form.attr('type'),
+              url: $form.attr('action'),
+              data: $form.serialize(),
+              dataType: 'json'
+            });
+            
+        });
+    });
+    
+</script>
 @endsection

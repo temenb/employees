@@ -11,7 +11,7 @@ class Employee extends Model
 {
     use HasFactory, SoftDeletes;
     
-    protected $fillable = ['name', 'telegram'];
+    protected $fillable = ['name', 'telegram', 'suspended'];
     
     public function schedules(): HasMany
     {

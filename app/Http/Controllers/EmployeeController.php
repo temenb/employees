@@ -22,15 +22,9 @@ class EmployeeController extends Controller
 
     public function index()
     {
-        $employees = Employee::all();
-        $employeesHasToBeAtWork = Employee::whereHas('schedules', function($q) {
-            $day = now()->format('w');
-            $time = 60*60*now()->format('H') + 60*now()->format('i');
-            $q->where('day', $day)->where('from', '<', $time)->where('to', '>', $time);
-        })->get();
+        $employees = Employee::orderBy('telegram')->get();
         
-        $employeesHasToBeAtWork->pluck('telegram');
-        return view('employees.index', ['employees' => $employees, 'employeesHasToBeAtWork' => $employeesHasToBeAtWork]);
+        return view('employees.index', ['employees' => $employees]);
     }
 
     public function create()
@@ -52,9 +46,12 @@ class EmployeeController extends Controller
 
     public function patch(Request $request, $id)
     {
-        $employees = Employee::find($id);
-        $employees->fill($request->all());
-        $employees->save();
+        $employee = Employee::find($id);
+        
+        $employee->fill($request->all());        
+        $employee->suspended = (bool) $request->get('suspended');
+        $employee->save();
+        
         return redirect()->route('employees');
     }
 
@@ -151,34 +148,44 @@ class EmployeeController extends Controller
         $day = $request->day;
         $time = Schedule::convertStringToTimestamp($request->time);
 
-        if (0 === strpos($request->employees, '<ul')) {
-            preg_match_all('/(?<=\\>)[^\\<]+(?=\\<\\/li\\>)/', $request->employees, $matches);
-            $employees = array_map(function($item) {return trim($item);}, $matches[0]);
-            unset($employees[0]);
-            unset($employees[1]);
-            unset($employees[2]);
-            unset($employees[3]);
-            unset($employees[4]);
-        } else {
-            $employees = array_map('trim', preg_split("/[\\n\\s\\t]/", $request->employees));
-        }
+        $getRequestedEmployeesList = function(Request $request) {
+            if (0 === strpos($request->employees, '<ul')) {
+                preg_match_all('/(?<=\\>)[^\\<]+(?=\\<\\/li\\>)/', $request->employees, $matches);
+                $employees = array_map(function($item) {return trim($item);}, $matches[0]);
+                unset($employees[0]);
+                unset($employees[1]);
+                unset($employees[2]);
+                unset($employees[3]);
+                unset($employees[4]);
+            } else {
+                $employees = array_map('trim', preg_split("/[\\n\\s\\t]/", $request->employees));
+            }
+            return $employees;
+        };
+        $employees = $getRequestedEmployeesList($request);
 
-        $employeesAtWorkInTime = Employee::whereIn('name', $employees)->whereHas('schedules', function($q) use($day, $time) {
-            $q->where('day', $day)->where('from', '<', $time)->where('to', '>', $time);
-        })->get();
+        $employeesAtWorkInTime = Employee::whereIn('name', $employees)
+            ->where('suspended', false)
+            ->whereHas('schedules', function($q) use($day, $time) {
+                $q->where('day', $day)->where('from', '<', $time)->where('to', '>', $time);
+            })
+            ->get();
         
         $_employees = array_diff($employees, $employeesAtWorkInTime->pluck('name')->toArray());
         
         
-        $employeesAtWorkNotInTime = Employee::whereIn('name', $_employees)->get();
+        $employeesAtWorkNotInTime = Employee::whereIn('name', $_employees)->where('suspended', false)->get();
         
         
         $notFoundEmployees = array_diff($_employees, $employeesAtWorkNotInTime->pluck('name')->toArray());
         
         
-        $absentEmployees = Employee::whereHas('schedules', function($q) use($day, $time) {
-            $q->where('day', $day)->where('from', '<', $time)->where('to', '>', $time);
-        })->whereNotIn('name', $employees)->get();
+        $absentEmployees = Employee::where('suspended', false)
+            ->whereNotIn('name', $employees)
+            ->whereHas('schedules', function($q) use($day, $time) {
+                $q->where('day', $day)->where('from', '<', $time)->where('to', '>', $time);
+            })
+            ->get();
         
         return view('employees.report', [
             'initialList' => $employees, 
