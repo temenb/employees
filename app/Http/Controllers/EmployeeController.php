@@ -77,10 +77,12 @@ class EmployeeController extends Controller
                     $from = Schedule::convertTimestampToString($data['from']);
                     $to = Schedule::convertTimestampToString($data['to']); 
                     $days = WeekDay::convertIntsToString($data['days']); 
-                    $contents .= "{$days};{$from};{$to};\n";    
+                    $contents .= "{$days};{$from};{$to};";
+                    $contents .= ($i == 1)? $employee->suspended: '';
+                    $contents .= ";\n";
                 }
             } else {
-                $contents .= ';;;';
+                $contents .= ";;;{$employee->suspended};";
             }
         }
                 
@@ -131,6 +133,7 @@ class EmployeeController extends Controller
                     'to' => Schedule::convertStringToTimestamp($line[4]),
                 ];    
             }
+            $data[$key]['employee']['suspended'] = empty($line[5])? 0: 1;
         }
         
         foreach ($data as $piece) {
@@ -163,9 +166,14 @@ class EmployeeController extends Controller
             return $employees;
         };
         $employees = $getRequestedEmployeesList($request);
+        
+        
+        $suspendedEmployees = Employee::whereIn('name', $employees)->where('suspended', true)->get();
 
-        $employeesAtWorkInTime = Employee::whereIn('name', $employees)
-            ->where('suspended', false)
+        $_employees = array_diff($employees, $suspendedEmployees->pluck('name')->toArray());
+        
+        
+        $employeesAtWorkInTime = Employee::whereIn('name', $_employees)
             ->whereHas('schedules', function($q) use($day, $time) {
                 $q->where('day', $day)->where('from', '<', $time)->where('to', '>', $time);
             })
@@ -176,11 +184,11 @@ class EmployeeController extends Controller
         
         $employeesAtWorkNotInTime = Employee::whereIn('name', $_employees)->where('suspended', false)->get();
         
-        
         $notFoundEmployees = array_diff($_employees, $employeesAtWorkNotInTime->pluck('name')->toArray());
         
         
         $absentEmployees = Employee::where('suspended', false)
+            ->where('suspended', false)
             ->whereNotIn('name', $employees)
             ->whereHas('schedules', function($q) use($day, $time) {
                 $q->where('day', $day)->where('from', '<', $time)->where('to', '>', $time);
@@ -191,6 +199,7 @@ class EmployeeController extends Controller
             'initialList' => $employees, 
             'employeesAtWorkInTime' => $employeesAtWorkInTime,
             'employeesAtWorkNotInTime' => $employeesAtWorkNotInTime,
+            'suspendedEmployees' => $suspendedEmployees,
             'notFoundEmployees' => $notFoundEmployees, 
             'absentEmployees' => $absentEmployees,
             'request' => $request,

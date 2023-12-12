@@ -101,6 +101,35 @@
         </div>
         <div class="col-md-8">
             <div class="card">
+                <div class="card-header">{{ __('Suspended employees') }}</div>
+                <table>
+                    <tr>
+                        <td>{{ __('Name') }}</td>
+                        <td>{{ __('Telegram') }}</td>
+                    </tr>
+                @foreach ($suspendedEmployees as $employee)
+                    <tr>
+                        <td>{{ $employee->name }}</td>
+                        <td>{{ $employee->telegram }}</td>
+                    </tr>
+                @endforeach
+                </table>
+                <form method="get" action="{{ route('employees.custom_export') }}">
+                @foreach ($absentEmployees as $employee)
+                    <input type="hidden" name="ids[]" value="{{ $employee->id }}" />
+                @endforeach
+                    <div class="row mb-0">
+                        <div class="col-md-8 offset-md-4">
+                            <button type="submit" class="btn btn-primary">
+                                {{ __('Export') }}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
                 <div class="card-header">{{ __('Employees at work not in time') }}</div>
                 <table>
                     <tr>
