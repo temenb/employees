@@ -24,29 +24,13 @@ class ScheduleController extends Controller
 
     public function insert(Request $request)
     {
-        $days = $request->days;
 
-        foreach($days as $day) {
-            foreach($days as $day) {
-                $schedule = Schedule::make($request->all());
-                $schedule->day = $day;
-                $from = Schedule::convertStringToTimestamp($request->from);
-                $to = Schedule::convertStringToTimestamp($request->to);
-                $schedule->from = $from;
-                if ($from < $to) {
-                    $schedule->to = $to;
-                    $schedule->save();            
-                } else {
-                    $schedule->to = Schedule::convertStringToTimestamp('24:00');
-                    $schedule->save();            
-
-                    $schedule2 = Schedule::make($request->all());
-                    $schedule2->day = ($day + 1)%7;
-                    $schedule2->from = 0;
-                    $schedule2->to = $to;
-                    $schedule2->save();            
-                }
-            }
+        $employeeId = $request->get('employee_id');
+        $days = $request->get('day');
+        $froms = $request->get('from');
+        $tos = $request->get('to');
+        foreach(array_keys($days) as $key) {
+            Schedule::createCustom($employeeId, $days[$key], $froms[$key], $tos[$key]);
         }
 
         return redirect()->route('employees');

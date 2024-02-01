@@ -106,7 +106,7 @@
             $schedule.find('label[for=to]').attr('for', 'to' + num);
             $schedule.find('#to').attr('id', 'to' + num).attr('name', 'to[' + num + ']');
 
-            $scheduleContainer.append($schedule);
+        $scheduleContainer.append($schedule);
             if (required === undefined) {
                 toggleRequired($schedule);
             } else {
@@ -124,8 +124,8 @@
         };
         
         $($scheduleContainer).on('change', '.toggle-require', formChanged);
-        
-        addSchedule(true);
+
+        addSchedule($scheduleContainer.data('required'));
         
     });
         

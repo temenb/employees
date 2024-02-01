@@ -57,6 +57,7 @@
                             </div>
                         </div>
 
+                        <div id="schedule-container"></div>
 
                         <div class="row mb-0">
                             <div class="col-md-8 offset-md-4">
@@ -68,6 +69,9 @@
                         
                         <a href="{{ url()->previous() }}">{{ __('Cancel') }}</a>
                     </form>
+                    @if (!isset($employee))
+                        @include('schedules.template')
+                    @endif
                 </div>
             </div>
         </div>

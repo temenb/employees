@@ -34,7 +34,20 @@ class EmployeeController extends Controller
 
     public function insert(Request $request)
     {
-        Employee::create($request->all());
+
+        $employee = Employee::make();
+        $employee->name = $request->get('name');
+        $employee->telegram = $request->get('telegram');
+        $employee->suspended = (bool) $request->get('suspended');
+        $employee->save();
+        
+        $days = $request->get('day');
+        $froms = $request->get('from');
+        $tos = $request->get('to');
+        foreach(array_keys($days) as $key) {
+            Schedule::createCustom($employee->id, $days[$key], $froms[$key], $tos[$key]);
+        }
+        
         return redirect()->route('employees');
     }
 
