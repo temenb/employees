@@ -127,11 +127,30 @@ class EmployeeController extends Controller
             $days = empty($line[2])? $days: explode(',', $line[2]);
 
             foreach ($days as $day) {
-                $data[$key]['schedule'][] = [
-                    'day' => array_search(trim($day), WeekDay::DAYS),
-                    'from' => Schedule::convertStringToTimestamp($line[3]),
-                    'to' => Schedule::convertStringToTimestamp($line[4]),
-                ];    
+                $from = Schedule::convertStringToTimestamp($request->from);
+                $to = Schedule::convertStringToTimestamp($request->to);
+                
+                if ($from < $to) {
+                    $data[$key]['schedule'][] = [
+                        'day' => array_search(trim($day), WeekDay::DAYS),
+                        'from' => $from,
+                        'to' => $to,
+                    ];
+                } else {
+                    $day = array_search(trim($day), WeekDay::DAYS);
+                    $data[$key]['schedule'][] = [
+                        'day' => $day,
+                        'from' => $from,
+                        'to' => '24:00',
+                    ];
+                    
+                    $data[$key]['schedule'][] = [
+                        'day' => ($day + 1)%7,
+                        'from' => 0,
+                        'to' => $to,
+                    ];      
+                }
+                
             }
             $data[$key]['employee']['suspended'] = empty($line[5])? 0: 1;
         }
@@ -167,7 +186,6 @@ class EmployeeController extends Controller
         };
         $employees = $getRequestedEmployeesList($request);
         
-        
         $suspendedEmployees = Employee::whereIn('name', $employees)->where('suspended', true)->get();
 
         $_employees = array_diff($employees, $suspendedEmployees->pluck('name')->toArray());
@@ -184,7 +202,7 @@ class EmployeeController extends Controller
         
         $employeesAtWorkNotInTime = Employee::whereIn('name', $_employees)->where('suspended', false)->get();
         
-        $notFoundEmployees = array_diff($_employees, $employeesAtWorkNotInTime->pluck('name')->toArray());
+        $notFoundEmployees = array_diff($_employees, $employeesAtWorkNotInTime->pluck('name')->toArray(), $suspendedEmployees->pluck('name')->toArray());
         
         
         $absentEmployees = Employee::where('suspended', false)
