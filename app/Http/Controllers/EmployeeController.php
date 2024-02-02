@@ -140,41 +140,20 @@ class EmployeeController extends Controller
             $days = empty($line[2])? $days: explode(',', $line[2]);
 
             foreach ($days as $day) {
-                $from = Schedule::convertStringToTimestamp($request->from);
-                $to = Schedule::convertStringToTimestamp($request->to);
-                
-                if ($from < $to) {
-                    $data[$key]['schedule'][] = [
-                        'day' => array_search(trim($day), WeekDay::DAYS),
-                        'from' => $from,
-                        'to' => $to,
-                    ];
-                } else {
-                    $day = array_search(trim($day), WeekDay::DAYS);
-                    $data[$key]['schedule'][] = [
-                        'day' => $day,
-                        'from' => $from,
-                        'to' => '24:00',
-                    ];
-                    
-                    $data[$key]['schedule'][] = [
-                        'day' => ($day + 1)%7,
-                        'from' => 0,
-                        'to' => $to,
-                    ];      
-                }
-                
+                $data[$key]['schedule'][] = [
+                    'day' => array_search(trim($day), WeekDay::DAYS),
+                    'from' => $line[3],
+                    'to' => $line[4],
+                ];
             }
             $data[$key]['employee']['suspended'] = empty($line[5])? 0: 1;
         }
-        
         foreach ($data as $piece) {
             $employee = Employee::create(array_map('utf8_encode', $piece['employee']));
             foreach ($piece['schedule'] as $schedule) {
-                $employee->schedules()->save(Schedule::make($schedule));
+                Schedule::createCustom($employee->id, ...$schedule);
             }
         }
-        
         return redirect()->route('employees');
     }
 

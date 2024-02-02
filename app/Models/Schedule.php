@@ -38,12 +38,13 @@ class Schedule extends Model
     {
         $timestampFrom = Schedule::convertStringToTimestamp($from);
         $timestampTo = Schedule::convertStringToTimestamp($to);
+        $timestampTo = $timestampTo? $timestampTo: Schedule::convertStringToTimestamp('24:00');
         
         $schedule = Schedule::make();
         $schedule->employee_id = $employeeId;
         $schedule->day = $day;
         $schedule->from = $timestampFrom;
-        if ($timestampFrom < $timestampTo) {
+        if ($timestampFrom <= $timestampTo) {
             $schedule->to = $timestampTo;
             $schedule->save();            
         } else {
