@@ -15,7 +15,15 @@
                         @endisset
                         <input type="hidden" name="employee_id" value="{{ isset($schedules)? $schedules->first()->employee_id: $employeeId }}" />
 
-                        <div id="schedule-container" data-required="true"></div>
+                        <div id="schedule-container" 
+                            data-required="true"
+                            data-multiple="{{ !isset($schedules) }}"
+                            @isset($schedules)
+                                data-day="{{ $schedules->pluck('day')->implode(',') }}"
+                                data-from="{{ \App\Models\Schedule::convertTimestampToString($schedules->first()->from) }}"
+                                data-to="{{ \App\Models\Schedule::convertTimestampToString($schedules->first()->to) }}"
+                            @endisset
+                        ></div>
                         
                         <div class="row mb-0">
                             <div class="col-md-8 offset-md-4">
@@ -27,11 +35,12 @@
                         
                         <a href="{{ url()->previous() }}">{{ __('Cancel') }}</a>
                     </form>
-                    @if (!isset($schedule))
                     
-                        @include('schedules.template')
+                    
+                                        
+                    @include('schedules.template')
                         
-                    @endif
+                    
                 </div>
             </div>
         </div>

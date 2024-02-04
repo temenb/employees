@@ -122,7 +122,7 @@
                                                     @endif
                                                 @endforeach
                                             </td>
-                                            <td>{{ \App\Models\Schedule::convertTimestampToString($schedule['from'] ) }}</td>
+                                            <td>{{ \App\Models\Schedule::convertTimestampToString($schedule['from']) }}</td>
                                             <td>{{ \App\Models\Schedule::convertTimestampToString($schedule['to']) }}</td>
                                             <td>
                                                 <a href="{{ route('schedules.edit', ['ids' => implode(',', $schedule['ids'])]) }}">{{ __('Edit') }}</a>
