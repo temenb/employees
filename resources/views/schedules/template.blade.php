@@ -125,7 +125,7 @@
                 $schedule.removeAttr('style');
 
                 $schedule.find('label[for=day]').attr('for', 'day' + num);
-                $schedule.find('#day').attr('id', 'day' + num).attr('name', 'day[' + num + ']');
+                $schedule.find('#day').attr('id', 'day' + num).attr('name', 'day[' + num + '][]');
 
                 $schedule.find('label[for=from]').attr('for', 'from' + num);
                 $schedule.find('#from').attr('id', 'from' + num).attr('name', 'from[' + num + ']');

@@ -30,7 +30,9 @@ class ScheduleController extends Controller
         $froms = $request->get('from');
         $tos = $request->get('to');
         foreach(array_keys($days) as $key) {
-            Schedule::createCustom($employeeId, $days[$key], $froms[$key], $tos[$key]);
+            foreach($days[$key] as $day) {
+                Schedule::createCustom($employeeId, $day, $froms[$key], $tos[$key]);
+            }
         }
 
         return redirect()->route('employees');
@@ -50,7 +52,9 @@ class ScheduleController extends Controller
         $froms = $request->get('from');
         $tos = $request->get('to');
         foreach(array_keys($days) as $key) {
-            Schedule::createCustom($employeeId, $days[$key], $froms[$key], $tos[$key]);
+            foreach($days[$key] as $day) {
+                Schedule::createCustom($employeeId, $day, $froms[$key], $tos[$key]);
+            }
         }
 
 
