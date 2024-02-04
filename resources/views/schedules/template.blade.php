@@ -24,18 +24,18 @@
 
             <div class="col-md-6">
 
-                <input id="from" type="hidden" class="time required toggle-require form-control @error('from') is-invalid @enderror" name="from" value="00:00" autocomplete="from">
+                <input id="from" type="hidden" class="time required toggle-require form-control @error('from') required is-invalid @enderror" name="from" autocomplete="from">
 
                 <select class="hour toggle-require required form-control @error('to') is-invalid @enderror">
-                    <option value="00" selected="selected">00</option>
-                    @foreach (range(1, 24, 1) as $hour)
+                    <option disabled selected value></option>
+                    @foreach (range(0, 24, 1) as $hour)
                         <option value="{{ sprintf("%02s", $hour) }}" >{{ sprintf("%02s", $hour) }}</option>
                     @endforeach
                 </select>
             <label class="col-md-4 col-form-label text-md-end">{{ __(':') }}</label>
 
                 <select class="minute toggle-require required form-control @error('to') is-invalid @enderror">
-                    <option value="00" selected="selected">00</option>
+                    <option value="00" >00</option>
                     <option value="30" >30</option>
                 </select>
 
@@ -54,18 +54,18 @@
 
             <div class="col-md-6">
 
-                <input id="to" type="hidden" class="time required toggle-require form-control @error('to') is-invalid @enderror" name="to" value="00:00" autocomplete="to">
+                <input id="to" type="hidden" class="time required toggle-require form-control @error('to') required is-invalid @enderror" name="to" autocomplete="to">
 
                 <select class="hour toggle-require required form-control @error('to') is-invalid @enderror">
-                    <option value="00" selected="selected">00</option>
-                    @foreach (range(1, 24, 1) as $hour)
+                    <option disabled selected value></option>
+                    @foreach (range(0, 24, 1) as $hour)
                         <option value="{{ sprintf("%02s", $hour) }}" >{{ sprintf("%02s", $hour) }}</option>
                     @endforeach
                 </select>
             <label class="col-md-4 col-form-label text-md-end">{{ __(':') }}</label>
 
                 <select class="minute toggle-require required form-control @error('to') is-invalid @enderror">
-                    <option value="00" selected="selected">00</option>
+                    <option value="00" >00</option>
                     <option value="30" >30</option>
                 </select>
 
@@ -157,9 +157,9 @@
             addSchedule($scheduleContainer.data('required'));
             
             (function() {
-                const $day = $scheduleContainer.data('day');
-                if ($day !== undefined) {
-                    const days = $day.split(',');
+                const data_day = $scheduleContainer.data('day');
+                if (data_day !== undefined) {
+                    const days = Number.isInteger(data_day)? data_day: data_day.split(',');
                     const from = $scheduleContainer.data('from');
                     const to = $scheduleContainer.data('to');
                     $scheduleContainer.find('select[name^=day\\\[]:first').val(days);
