@@ -57,7 +57,8 @@
                             </div>
                         </div>
 
-                        <div id="schedule-container"></div>
+                        
+                        <div id="schedule-container" data-multiple="true" ></div>
 
                         <div class="row mb-0">
                             <div class="col-md-8 offset-md-4">

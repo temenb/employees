@@ -3,7 +3,7 @@
         <label for="day" class="col-md-4 col-form-label text-md-end">{{ __('Day') }}</label>
 
         <div class="col-md-6">
-            <select id="day" class="toggle-require required form-control @error('day') is-invalid @enderror" name="days[]" autocomplete="day" autofocus multiple >
+            <select id="day" class="toggle-empty required form-control @error('day') is-invalid @enderror" name="days[]" autocomplete="day" autofocus multiple >
                 @foreach (\App\Enum\WeekDay::DAYS as $key => $day)
                     <option value="{{ $key }}" >{{ $day }}</option>
                 @endforeach
@@ -24,9 +24,9 @@
 
             <div class="col-md-6">
 
-                <input id="from" type="hidden" class="time required toggle-require form-control @error('from') required is-invalid @enderror" name="from" autocomplete="from">
+                <input id="from" type="hidden" class="time required toggle-empty form-control @error('from') required is-invalid @enderror" name="from" autocomplete="from">
 
-                <select class="hour toggle-require required form-control @error('to') is-invalid @enderror">
+                <select class="hour toggle-empty required form-control @error('to') is-invalid @enderror">
                     <option disabled selected value></option>
                     @foreach (range(0, 24, 1) as $hour)
                         <option value="{{ sprintf("%02s", $hour) }}" >{{ sprintf("%02s", $hour) }}</option>
@@ -34,7 +34,7 @@
                 </select>
             <label class="col-md-4 col-form-label text-md-end">{{ __(':') }}</label>
 
-                <select class="minute toggle-require required form-control @error('to') is-invalid @enderror">
+                <select class="minute toggle-empty required form-control @error('to') is-invalid @enderror">
                     <option value="00" >00</option>
                     <option value="30" >30</option>
                 </select>
@@ -54,9 +54,9 @@
 
             <div class="col-md-6">
 
-                <input id="to" type="hidden" class="time required toggle-require form-control @error('to') required is-invalid @enderror" name="to" autocomplete="to">
+                <input id="to" type="hidden" class="time required toggle-empty form-control @error('to') required is-invalid @enderror" name="to" autocomplete="to">
 
-                <select class="hour toggle-require required form-control @error('to') is-invalid @enderror">
+                <select class="hour toggle-empty required form-control @error('to') is-invalid @enderror">
                     <option disabled selected value></option>
                     @foreach (range(0, 24, 1) as $hour)
                         <option value="{{ sprintf("%02s", $hour) }}" >{{ sprintf("%02s", $hour) }}</option>
@@ -64,7 +64,7 @@
                 </select>
             <label class="col-md-4 col-form-label text-md-end">{{ __(':') }}</label>
 
-                <select class="minute toggle-require required form-control @error('to') is-invalid @enderror">
+                <select class="minute toggle-empty required form-control @error('to') is-invalid @enderror">
                     <option value="00" >00</option>
                     <option value="30" >30</option>
                 </select>
@@ -152,7 +152,7 @@
                 }
             };
 
-            $($scheduleContainer).on('change', '.toggle-require', formChanged);
+            $($scheduleContainer).on('change', '.toggle-empty', formChanged);
 
             addSchedule($scheduleContainer.data('required'));
             
@@ -197,17 +197,34 @@
                 
             };
             
+            const timeDdChanged = function(e) {
+                const $target = $(e.target);
+                const $container = $target.closest('.time-dd-container');
+                const hour = $container.find('.hour').val();
+                const minute = $container.find('.minute').val();
+                const value = hour + ':' + minute;
+
+                $container.find('input[type=hidden].time').val(value);
+
+            };
+            
+            const timeDdPrepare = function(index, element) {
+                const $element = $(element);
+                const val = $element.val();
+                if (val !== null) {
+                    $element.change();
+                }
+                    
+            };
+            
+            
+            $(document).on('change', '.time-dd-container .hour', timeDdChanged);
+            
+            
             $froms.each(fillDd);
             $tos.each(fillDd);
             
-            $(document).on('change', '.time-dd-container .hour, .time-dd-container .minute', function(e) {
-                    const $container = $(e.target).closest('.time-dd-container');
-                    
-                    const value = $container.find('.hour').val() + ':' + $container.find('.minute').val();
-                    
-                    $container.find('input[type=hidden].time').val(value);
-            });
-            
+            $('.time-dd-container .hour').each(timeDdPrepare);
         }())
     });
 
