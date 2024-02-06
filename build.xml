@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="php-automate-build-ant" default="full-build">
 
+    <target name="test">
+        <exec executable
+    </target>
     
     <!--<include file="my_clspath.xml" />-->
     <target name="deploy-prod">
@@ -9,7 +12,7 @@
             host="ec2-51-20-121-131.eu-north-1.compute.amazonaws.com" 
             username="ubuntu"
             trust="true"
-            keyfile="/home/oleksii/.ssh/employees_prod_rsa"
+            keyfile="~/.ssh/employees_prod_rsa"
             command="sh -c 'cd /home/ubuntu/www/employees &amp;&amp; ant deploy'" />
     </target>
 <!--    <sshexec host="@{tomcat.server}" username="${user.name}"
