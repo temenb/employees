@@ -10,7 +10,7 @@
             username="ubuntu"
             trust="true"
             keyfile="/home/oleksii/.ssh/employees_prod_rsa"
-            command="sh -c 'cd /home/ubuntu/www/employees && ant build'" />
+            command="sh -c 'cd /home/ubuntu/www/employees &amp;&amp; ant deploy'" />
     </target>
 <!--    <sshexec host="@{tomcat.server}" username="${user.name}"
                     command="rm -rf /u01/tomcat-sites/${tomcat.environment}/webapps/${tomcat.webapp}"
