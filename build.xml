@@ -6,23 +6,12 @@
     <target name="deploy-prod">
         <echo message="Deploying prod" />
         <sshexec 
-            host="employees-prod" 
-            sshConfig="/home/oleksii/.ssh/config"
-            trust="true"
-            command="pwd" />
-<!--            host="ec2-51-20-121-131.eu-north-1.compute.amazonaws.com" 
+            host="ec2-51-20-121-131.eu-north-1.compute.amazonaws.com" 
             username="ubuntu"
             trust="true"
             keyfile="/home/oleksii/.ssh/employees_prod_rsa"
-            command="pwd" />-->
-<!--        <sshexec 
-            host="127.0.0.1" 
-            username="oleksii"
-            trust="true"
-            keyfile="/home/oleksii/.ssh/test_rsa"
-            command="pwd" />
             command="sh -c 'cd /home/ubuntu/www/employees && ant build'" />
-    --></target>
+    </target>
 <!--    <sshexec host="@{tomcat.server}" username="${user.name}"
                     command="rm -rf /u01/tomcat-sites/${tomcat.environment}/webapps/${tomcat.webapp}"
                     keyfile="${user.home}/.ssh/id_dsa" />
