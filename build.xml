@@ -1,31 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="php-automate-build-ant" default="full-build">
     
-    <!--<include file="my_clspath.xml" />-->
+    
+    <property file="build/properties/common"/>
+    <property file="build/properties/$(environment)"/>
+    
     <target name="deploy-prod">
         <echo message="Deploying prod" />
         <sshexec 
-            host="ec2-51-20-121-131.eu-north-1.compute.amazonaws.com" 
-            username="ubuntu"
+            host="${prod_host}" 
+            username="${prod_username}"
             trust="true"
-            keyfile="~/.ssh/employees_prod_rsa"
-            command="sh -c 'cd /home/ubuntu/www/employees &amp;&amp; ant deploy'" />
+            keyfile="${prod_keyfile}"
+            command="sh -c 'cd ${prod_dir} &amp;&amp; ant deploy'" />
     </target>
-<!--    <sshexec host="@{tomcat.server}" username="${user.name}"
-                    command="rm -rf /u01/tomcat-sites/${tomcat.environment}/webapps/${tomcat.webapp}"
-                    keyfile="${user.home}/.ssh/id_dsa" />
-                <sshexec host="@{tomcat.server}" username="${user.name}"
-                    command="rm -rf /u01/tomcat-sites/${tomcat.environment}/work/Catalina/localhost/"
-                    keyfile="${user.home}/.ssh/id_dsa" />
-                <scp file="${deploy.root}/tomcat/${tomcat.webapp}.war"
-                    todir="${user.name}@@@{tomcat.server}:/u01/tomcat-sites/${tomcat.environment}/webapps/"
-                    passphrase="" keyfile="${user.home}/.ssh/id_dsa" />
-                <sshexec host="@{tomcat.server}" username="${user.name}"
-                    command="/u01/tomcat-sites/${tomcat.environment}/startup.sh"
-                    keyfile="${user.home}/.ssh/id_dsa" />
-                <sleep seconds="10" />
-            </sequential>-->
-    
+
     <target name="deploy" depends="pull,migrate">
         <echo message="Deploy latest" />
     </target>
