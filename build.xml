@@ -5,6 +5,11 @@
     <property file="build/properties/common"/>
     <property file="build/properties/env.${environment}"/>
     
+    <target name="test">
+        <echo>build/properties/env.${environment}<echo/>
+        <echo>${prod_host}<echo/>
+    </target>
+    
     <target name="deploy-prod">
         <echo message="Deploying prod" />
         <sshexec 
