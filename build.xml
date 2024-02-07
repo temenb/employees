@@ -3,7 +3,7 @@
     
     
     <property file="build/properties/common"/>
-    <property file="build/properties/$(environment)"/>
+    <property file="build/properties/${environment}"/>
     
     <target name="deploy-prod">
         <echo message="Deploying prod" />
