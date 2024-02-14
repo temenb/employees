@@ -1,7 +1,7 @@
 version: '3'
 services:
     pgsql:
-        container_name: alexa-postgres
+        container_name: botan-postgres
         build: ./docker/containers/postgres
         ports:
             - '${FORWARD_DB_PORT:-5433}:5432'
@@ -15,7 +15,7 @@ services:
             - './docker/containers/postgres/data:/var/lib/postgresql/data'
             - './docker/containers/postgres/dumps:/dumps'
         networks:
-            - alexa
+            - botan
         healthcheck:
             test:
                 - CMD
@@ -29,7 +29,7 @@ services:
             timeout: 5s
 
     pgsql_phpunit:
-        container_name: alexa-postgres-phpunita
+        container_name: botan-postgres-phpunit
         build: ./docker/containers/postgres
         ports:
             - '${FORWARD_DB_PORT:-5434}:5432'
@@ -42,7 +42,7 @@ services:
             - './docker/containers/phpunit-postgres/data_phpunit:/var/lib/postgresql/data'
             - './docker/containers/phpunit-postgres/dumps:/dumps'
         networks:
-            - alexa
+            - botan
         healthcheck:
             test:
                 - CMD
@@ -56,7 +56,7 @@ services:
             timeout: 5s
 
     web:
-        container_name: alexa-web
+        container_name: botan-web
         build: ./docker/containers/nginx
         ports:
             - "80:80"
@@ -66,10 +66,10 @@ services:
             - ./docker/containers/nginx/config/site.conf:/etc/nginx/conf.d/default.conf
             - ./docker/containers/nginx/logs:/etc/logs/nginx
         networks:
-            - alexa
+            - botan
 
     php:
-        container_name: alexa-php
+        container_name: botan-php
         build: ./docker/containers/php
 #        ports:
 #            - "8000:8000"
@@ -77,45 +77,52 @@ services:
             - ./:/project
             - ./docker/containers/php/config/php.ini:/usr/local/etc/php/conf.d/php.ini
         networks:
-            - alexa
+            - botan
 
     composer:
-        container_name: alexa-composer
+        container_name: botan-composer
         build: ./docker/containers/composer
-        command: install --ignore-platform-reqs
+#        command: install --ignore-platform-reqs
+#         command: update --ignore-platform-reqs
 #        command: tail -f /etc/hosts
 #        command: cat composer.json
-#        command: composer require predis/predis
+#        command: composer require --dev "squizlabs/php_codesniffer=*" --ignore-platform-reqs
+        command: composer install
         volumes:
             - ./:/app
         networks:
-            - alexa
+            - botan
 
-#    npm:
-#        container_name: alexa-npm
-#        build: ./docker/containers/npm
-#        working_dir: /app
-##        command: npm i
-##        command: sh -c "npm i && tail -f /etc/hosts"
-##        command: npm install redis --save
-##        command: npm install node-uuid --save
-##        command: npm i @vitejs/plugin-react-refresh --force
-#        command: sh -c "npm i && npm run dev"
-##        command: npm install babel-preset-react --save
-#        ports:
-#            - "80:80"
-#            - "3000:3000"
-#            - "5173:5173"
-#            - "8000:8000"
-#        volumes:
-#            - ./:/app
-#            - ./docker/containers/npm/logs:/root/.npm/_logs/
-#        networks:
-#            - alexa
+    composer-install:
+        build: ./docker/containers/composer
+        command: install --ignore-platform-reqs
+        volumes:
+            - ./:/app
+        networks:
+            - botan
+
+    npm:
+        container_name: botan-npm
+        build: ./docker/containers/npm
+        working_dir: /app
+        command: sh -c "npm i && npm run dev -- --host"
+#        command: npm i
+#        command: sh -c "npm i && tail -f /etc/hosts"
+#        command: npm install redis --save
+#        command: npm install node-uuid --save
+#        command: npm i @vitejs/plugin-react-refresh --force
+#        command: npm install babel-preset-react --save
+        ports:
+           - "5173:5173"
+        volumes:
+            - ./:/app
+            - ./docker/containers/npm/logs:/root/.npm/_logs/
+        networks:
+            - botan
 
 networks:
-    alexa:
+    botan:
         driver: bridge
 volumes:
-    alexa-pgsql:
+    botan-pgsql:
         driver: local
