@@ -4,6 +4,7 @@
     
     <property file="build/properties/common"/>
     <property file="build/properties/env.${environment}"/>
+    <property name="php-container-name" value="employee-php"/>
     
     
 <!--  CD   -->
@@ -31,7 +32,7 @@
         <echo message="php artisan migrate" />
         <exec executable="docker" failonerror="true">
             <arg value="exec"/>
-            <arg value="botan-php"/>
+            <arg value="${php-container-name}"/>
             <arg value="sh"/>
             <arg value="-c"/>
             <arg value="php artisan migrate"/>
@@ -42,7 +43,7 @@
         <echo message="php artisan migrate" />
         <exec executable="docker" failonerror="true">
             <arg value="exec"/>
-            <arg value="botan-php"/>
+            <arg value="${php-container-name}"/>
             <arg value="sh"/>
             <arg value="-c"/>
             <arg value="php artisan migrate --database=pgsql_phpunit --seed"/>
@@ -203,7 +204,7 @@
             description="Run unit tests with PHPUnit without generating code coverage reports.">
         <exec executable="docker" failonerror="true" resultproperty="result.phpunit" taskname="phpunit">
             <arg value="exec"/>
-            <arg value="botan-php"/>
+            <arg value="${php-container-name}"/>
             <arg value="sh"/>
             <arg value="-c"/>
             <arg value="${phpunit} --configuration phpunit.xml tests --no-coverage "/>
